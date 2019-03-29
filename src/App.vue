@@ -1,65 +1,47 @@
 <template>
   <div>
-    <div class="block">
-    <span class="demonstration">默认</span>
-    <el-date-picker
-      v-model="value1"
-      type="datetime"
-      placeholder="选择日期时间">
-    </el-date-picker>
-  </div>
-  <div class="block">
-    <span class="demonstration">带快捷选项</span>
-    <el-date-picker
-      v-model="value2"
-      type="datetime"
-      placeholder="选择日期时间"
-      align="right"
-      :picker-options="pickerOptions1">
-    </el-date-picker>
-  </div>
-  <div class="block">
-    <span class="demonstration">设置默认时间</span>
-    <el-date-picker
-      v-model="value3"
-      type="datetime"
-      placeholder="选择日期时间"
-      default-time="12:00:00">
-    </el-date-picker>
-  </div>
+    <mt-button type="danger" icon="more" @click="show">default</mt-button>
+    <!-- <mybtn>123456</mybtn>
+    <mybtn type="primary">primary</mybtn> -->
+    <button type="button" class="mui-btn mui-btn-royal">
+					紫色
+		</button>
   </div>
 </template>
 
 <script>
-  export default {
-    data() {
+ //导入Toast组件
+  import { Toast } from 'mint-ui';
+
+  export default{
+    data(){
       return {
-        pickerOptions1: {
-          shortcuts: [{
-            text: '今天',
-            onClick(picker) {
-              picker.$emit('pick', new Date());
-            }
-          }, {
-            text: '昨天',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit('pick', date);
-            }
-          }, {
-            text: '一周前',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', date);
-            }
-          }]
-        },
-        value1: '',
-        value2: '',
-        value3: ''
-      };
+        toastInstance:null
+      }
+    },
+    created(){
+      this.getList();
+    },
+    methods:{
+      getList(){
+        this.show();
+        setTimeout(()=>{
+          this.toastInstance.close();
+        },2000)
+      },
+      show(){
+        this.toastInstance = Toast({
+          message:'弹窗信息',
+          position:'top',
+          duration:-1,//如为-1则弹出之后不消失
+          iconClass:'glyphicon glyphicon-heart',
+          className:'mytoast'//自定义Toast样式
+        })
+      }
     }
-  };
+  }
 </script>
+
+<style>
+  .mint-toast-icon{color:red;}
+</style>
