@@ -15,7 +15,7 @@ import 'mint-ui/lib/style.css'
 Vue.use(MintUI);
 
 
-// // //按需导入我们的Mint-UI组件
+// // //按需导入我们的Mint-UI组件a
 // import { Button } from 'mint-ui'
 // // //使用Vue.component注册组件
 // // Vue.component('mybtn',Button)
