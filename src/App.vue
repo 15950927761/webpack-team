@@ -35,6 +35,7 @@ export default {
 </script>
 <style lang="scss" scoped>
   .app-container{padding:40px 0 50px 0;overflow-x:hidden;}
+	.mint-header{z-index:99;}
 	.v-enter{
 		opacity:0;
 		transform:translateX(100%);
