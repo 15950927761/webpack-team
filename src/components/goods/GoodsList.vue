@@ -1,47 +1,39 @@
 <template>
     <div class="goods-list">
-        <div class="goods-item">
-            <img src="http://img.mp.itc.cn/upload/20170717/80e80d2f47c3412d8e0ee5ca2767497e_th.jpg">
-            <h1 class="title">荣耀10青春版 2400万AI自拍 珍珠屏</h1>
+
+        <!-- 第一种跳转方式 -->
+        <!-- <router-link class="goods-item" v-for="item in goodslist" :key="item.id" tag="div" :to="'/home/goodsinfo/' + item.id">
+            <img :src="item.img_url">
+            <h1 class="title">{{item.title}}</h1>
             <div class="info">
                 <div class="price">
-                    <span class="now">￥2199</span>
-                    <span class="old">￥2399</span>
+                    <span class="now">￥{{item.sell_price}}</span>
+                    <span class="old">￥{{item.market_price}}</span>
                 </div>
                 <div class="sell">
                     <span>热卖中</span>
-                    <span>剩60件</span>
+                    <span>剩{{item.stock_quantity}}件</span>
                 </div>
             </div>
-        </div>
-        <div class="goods-item">
-            <img src="http://img.mp.itc.cn/upload/20170717/80e80d2f47c3412d8e0ee5ca2767497e_th.jpg">
-            <h1 class="title">荣耀10青春版 2400万AI自拍 珍珠屏</h1>
+        </router-link> -->
+
+        <!-- 第二种跳转方式 -->
+        <div class="goods-item" v-for="item in goodslist" :key="item.id" @click="goDetail(item.id)">
+            <img :src="item.img_url">
+            <h1 class="title">{{item.title}}</h1>
             <div class="info">
                 <div class="price">
-                    <span class="now">￥2199</span>
-                    <span class="old">￥2399</span>
+                    <span class="now">￥{{item.sell_price}}</span>
+                    <span class="old">￥{{item.market_price}}</span>
                 </div>
                 <div class="sell">
                     <span>热卖中</span>
-                    <span>剩60件</span>
+                    <span>剩{{item.stock_quantity}}件</span>
                 </div>
             </div>
         </div>
-        <div class="goods-item">
-            <img src="http://img.mp.itc.cn/upload/20170717/80e80d2f47c3412d8e0ee5ca2767497e_th.jpg">
-            <h1 class="title">荣耀10青春版 2400万AI自拍 珍珠屏荣耀10青春版 2400万AI自拍 珍珠屏</h1>
-            <div class="info">
-                <div class="price">
-                    <span class="now">￥2199</span>
-                    <span class="old">￥2399</span>
-                </div>
-                <div class="sell">
-                    <span>热卖中</span>
-                    <span>剩60件</span>
-                </div>
-            </div>
-        </div>
+
+        <mt-button type="danger" size="large" @click="getMore">加载更多>></mt-button>
     </div>
 </template>
 
@@ -49,11 +41,43 @@
 export default {
     data(){
         return{
-
+            pageindex:1,
+            goodslist:[]
         }
     },
+    created(){
+        this.getGoodsList();
+    },
     methods:{
+        getGoodsList(){
+            this.$http.get('api/getgoods?pageindex=' + this.pageindex).then(result=>{
+                if(result.body.status==0){
+                    // this.goodslist = result.body.message
+                    // console.log(this.goodslist)
+                   this.goodslist = this.goodslist.concat(result.body.message);
+                }
+            })
+        },
+        getMore(){
+            this.pageindex++;
+            this.getGoodsList();
+        },
+        goDetail(id){
+            //使用 js形式进行路由导航
+            // console.log(this);
+            //一定要区分this.$route和this.$router这两个对象
+            //其中，this.$route是路由参数对象，所有路由中的参数，params,query都属于它
+            //this.$router是一个路由导航对象，用它可以方便的使用js代码，实现路由的前进，后退，跳转到新的url地址
+           
+            //1.最简单的
+            // this.$router.push('/home/goodsinfo/' + id)
 
+            //2.传递对象
+            // this.$router.push({path:'/home/goodsinfo/' + id});
+
+            // 3.命名的路由
+            this.$router.push({name:'goodsinfo',params:{ id }});
+        }
     }
 }
 </script>
