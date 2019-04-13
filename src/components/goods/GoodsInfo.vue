@@ -98,7 +98,15 @@ export default {
             this.$router.push({ name:'goodscomment',params:{ id } })
         },
         addToShopCar(){
-            this.ballflag = !this.ballflag
+            this.ballflag = !this.ballflag;
+            var goodsinfo = { 
+                id: this.id, 
+                count: this.selectedCount, 
+                price: this.goodsinfo.sell_price, 
+                selected: true 
+            }
+            //调用store中的mutations来将商品加入购物车
+            this.$store.commit("addToCar",goodsinfo);
         },
         beforeEnter(el){
             el.style.transform = "translate(0,0)";

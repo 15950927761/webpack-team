@@ -4,6 +4,98 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
+//注册vuex
+import Vuex from 'vuex'
+Vue.use(Vuex)
+var car = JSON.parse(localStorage.getItem('car') || '[]')
+var store = new Vuex.Store({
+   state:{//this.$store.state
+      car: car //购物车中商品的数据，用一个数组存储起来，在car数组中存储一些商品的对象，可以暂时将商品对象
+      //设计成这个样子{id:商品Id,conut:商品数量 ,price:商品价格,selected:false}
+   },
+   mutations:{//this.$store.commit('方法名','按需传递唯一的参数')
+      addToCar(state,goodsinfo){
+         var flag = false;
+         state.car.some(item=>{
+            if(item.id == goodsinfo.id){
+               item.count += parseInt(goodsinfo.count);
+               flag = true;
+               return true;
+            }
+         })
+         if(!flag){
+            state.car.push(goodsinfo);
+         }
+
+         //当更新car之后，需要存储到localStorage中去
+         localStorage.setItem('car',JSON.stringify(state.car))
+      },
+      updateGoodsInfo(state,goodsinfo){
+         state.car.some(item=>{
+            if(item.id == goodsinfo.id){
+               item.count = parseInt(goodsinfo.count);
+               return true;
+            }
+         })
+         localStorage.setItem('car',JSON.stringify(state.car));
+      },
+      removeFromCar(state,id){
+         state.car.some((item,i)=>{
+            if(item.id == id){
+               state.car.splice(i,1);
+               return true;
+            }
+         })
+         localStorage.setItem('car',JSON.stringify(state.car));
+      },
+      updateGoodsSelected(state,info){
+         state.car.some(item=>{
+            if(item.id == info.id){
+               item.selected = info.selected
+            }
+         })
+         localStorage.setItem('car',JSON.stringify(state.car))
+      }
+   },
+   getters:{//this.$store.getters
+      getAllCount(state){
+         var c = 0;
+         state.car.forEach(item=>{
+            c += item.count
+         })
+         return c;
+      },
+      getGoodsCount(state){
+         var o = {}
+         state.car.forEach(item=>{
+            o[item.id] = item.count
+         })
+         return o;
+      },
+      getGoodsSelected(state){
+         var o = {}
+         state.car.forEach(item=>{
+            o[item.id] = item.selected
+         })
+         return o;
+      },
+      getGoodsCountAndAmount(state){
+         var o = {
+            count: 0,
+            amount: 0
+         }
+         state.car.forEach(item=>{
+            if(item.selected){
+               o.count += item.count
+               o.amount += item.price * item.count
+            }
+         })
+         return o
+      }
+   }
+})
+
+
 //导入moment时间插件
 import moment from 'moment'
 
@@ -50,5 +142,6 @@ import app from './App.vue'
 var vm = new Vue({
     el:'#app',
     render: c => c(app),
-    router
+    router,
+    store
 })
